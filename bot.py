@@ -108,15 +108,15 @@ class QueueView(View):
         else:
             self.add_item(Button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=False, custom_id='close_queue'))
 
-    @discord.ui.button(label='Entrar na Fila', emoji='✅', style=ButtonStyle.success, disabled=False, custom_id='join_queue')
+    @discord.ui.button(label='Entrar na Fila', emoji='✅', style=ButtonStyle.success, disabled=False, custom_id=f'join_queue_{user_queue_key}')
     async def join_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'join')
 
-    @discord.ui.button(label='Sair da Fila', emoji='❌', style=ButtonStyle.danger, disabled=False, custom_id='leave_queue')
+    @discord.ui.button(label='Sair da Fila', emoji='❌', style=ButtonStyle.danger, disabled=False, custom_id=f'leave_queue_{user_queue_key}')
     async def leave_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'leave')
 
-    @discord.ui.button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=False, custom_id='close_queue')
+    @discord.ui.button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=False, custom_id=f'close_queue_{user_queue_key}')
     async def close_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'close')
 
