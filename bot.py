@@ -475,7 +475,7 @@ async def handle_queue_action(interaction, action):
 
             # Si la fila se llenó, enviar mensaje y iniciar partida
             if len(queue['players']) >= max_players:
-                await interaction.channel.send('✅ **¡Fila criada com sucesso!**\n\nUsa os botões para gerenciar a fila.')
+                await interaction.channel.send('✅ **¡Fila criada com sucesso!**\n\nTodos os jogadores devem ir para o canal de voz.')
                 await start_match(interaction, game_mode, queue)
 
         # Lógica para salir de la fila
