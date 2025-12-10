@@ -108,17 +108,15 @@ class QueueView(View):
         else:
             self.add_item(Button(label='Encerrar a Fila', emoji='🔄', style=ButtonStyle.secondary, disabled=False, custom_id='close_queue'))
 
-    @discord.ui.button(label='Entrar na Fila', emoji='✅', style=ButtonStyle.success, disabled=False, custom_id=f'join_queue_{user_queue_key}')
-    async def join_button(self, interaction: discord.Interaction, button: Button):
-        await handle_queue_action(interaction, 'join')
-
-    @discord.ui.button(label='Sair da Fila', emoji='❎', style=ButtonStyle.danger, disabled=False, custom_id=f'leave_queue_{user_queue_key}')
-    async def leave_button(self, interaction: discord.Interaction, button: Button):
-        await handle_queue_action(interaction, 'leave')
-
-    @discord.ui.button(label='Encerrar a Fila', emoji='🔄', style=ButtonStyle.secondary, disabled=False, custom_id=f'close_queue_{user_queue_key}')
-    async def close_button(self, interaction: discord.Interaction, button: Button):
-        await handle_queue_action(interaction, 'close')
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        # Manejar todas las interacciones de botones
+        if interaction.custom_id.startswith('join_queue'):
+            await handle_queue_action(interaction, 'join')
+        elif interaction.custom_id.startswith('leave_queue'):
+            await handle_queue_action(interaction, 'leave')
+        elif interaction.custom_id.startswith('close_queue'):
+            await handle_queue_action(interaction, 'close')
+        return True
 
 # Función para verificar si el usuario está en un canal de voz permitido
 async def is_user_in_allowed_voice_channel(user):
@@ -475,8 +473,9 @@ async def handle_queue_action(interaction, action):
                 ephemeral=True
             )
 
-            # Si la fila se llenó, iniciar partida
+            # Si la fila se llenó, enviar mensaje y iniciar partida
             if len(queue['players']) >= max_players:
+                await interaction.channel.send('✅ **¡Fila criada com sucesso!**\n\nUsa os botões para gerenciar a fila.')
                 await start_match(interaction, game_mode, queue)
 
         # Lógica para salir de la fila
@@ -881,8 +880,6 @@ async def handle_message_commands(message):
         # Guardar referência da mensagem
         # Guardar mensaje de la fila para ESTE USUARIO
         queue_messages[user_queue_key] = queue_message.id
-
-        await message.reply('✅ **¡Fila criada com sucesso!**\n\nUsa os botões para gerenciar a fila.')
 
 # Iniciar el bot
 if __name__ == "__main__":
