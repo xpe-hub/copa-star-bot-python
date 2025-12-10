@@ -98,25 +98,25 @@ class QueueView(View):
         
         # Botón Salir
         if is_closed:
-            self.add_item(Button(label='Sair da Fila', emoji='❌', style=ButtonStyle.danger, disabled=True, custom_id='leave_queue_disabled'))
+            self.add_item(Button(label='Sair da Fila', emoji='❎', style=ButtonStyle.danger, disabled=True, custom_id='leave_queue_disabled'))
         else:
-            self.add_item(Button(label='Sair da Fila', emoji='❌', style=ButtonStyle.danger, disabled=False, custom_id='leave_queue'))
+            self.add_item(Button(label='Sair da Fila', emoji='❎', style=ButtonStyle.danger, disabled=False, custom_id='leave_queue'))
         
         # Botón Cerrar (solo admin/creador)
         if is_full or is_closed:
-            self.add_item(Button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=True, custom_id='close_queue_disabled'))
+            self.add_item(Button(label='Encerrar a Fila', emoji='🔄', style=ButtonStyle.secondary, disabled=True, custom_id='close_queue_disabled'))
         else:
-            self.add_item(Button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=False, custom_id='close_queue'))
+            self.add_item(Button(label='Encerrar a Fila', emoji='🔄', style=ButtonStyle.secondary, disabled=False, custom_id='close_queue'))
 
     @discord.ui.button(label='Entrar na Fila', emoji='✅', style=ButtonStyle.success, disabled=False, custom_id=f'join_queue_{user_queue_key}')
     async def join_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'join')
 
-    @discord.ui.button(label='Sair da Fila', emoji='❌', style=ButtonStyle.danger, disabled=False, custom_id=f'leave_queue_{user_queue_key}')
+    @discord.ui.button(label='Sair da Fila', emoji='❎', style=ButtonStyle.danger, disabled=False, custom_id=f'leave_queue_{user_queue_key}')
     async def leave_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'leave')
 
-    @discord.ui.button(label='Encerrar a Fila', emoji='🚫', style=ButtonStyle.secondary, disabled=False, custom_id=f'close_queue_{user_queue_key}')
+    @discord.ui.button(label='Encerrar a Fila', emoji='🔄', style=ButtonStyle.secondary, disabled=False, custom_id=f'close_queue_{user_queue_key}')
     async def close_button(self, interaction: discord.Interaction, button: Button):
         await handle_queue_action(interaction, 'close')
 
@@ -340,18 +340,18 @@ def create_queue_embed(user_queue_key, is_closed=False):
         
         # Llenar slots vacíos para Team A
         while len(team_a_players) < 2:
-            team_a_players.append('🟢 Libre')
+            team_a_players.append('🟢 Livre')
         
         # Llenar slots vacíos para Team B
         while len(team_b_players) < 2:
-            team_b_players.append('🟢 Libre')
+            team_b_players.append('🟢 Livre')
         
-        player_list = f'**Equipo A ({len(queue["teams"][0])}/2):**\n{"\n".join(team_a_players)}\n\n**Equipo B ({len(queue["teams"][1])}/2):**\n{"\n".join(team_b_players)}'
+        player_list = f'**Participantes ({len(queue["teams"][0])}/2):**\n{"\n".join(team_a_players)}\n\n**Participantes ({len(queue["teams"][1])}/2):**\n{"\n".join(team_b_players)}'
     else:
         players = [f'🔴 {p.get("username", f"<@{p["id"]}>")}' for p in queue['players']]
         while len(players) < 2:
-            players.append('🟢 Libre')
-        player_list = f'**Jugadores ({len(queue["players"])}/2):**\n{"\n".join(players)}'
+            players.append('🟢 Livre')
+        player_list = f'**Participantes ({len(queue["players"])}/2):**\n{"\n".join(players)}'
 
     # Color dinámico según el estado (estilo RealTREM)
     if is_closed:
@@ -363,11 +363,12 @@ def create_queue_embed(user_queue_key, is_closed=False):
 
     embed = Embed(
         color=embed_color,
-        title=f'🎮 Copa Star - Fila {game_mode}',
+        title='2v2 | Fila Normal Criada!',
         description=description
     )
+    embed.set_author(name='FILAS | STAR CUP')
     embed.add_field(name=status, value=player_list, inline=False)
-    embed.set_footer(text='Bot Copa Star • Sistema RealTREM')
+    embed.set_footer(text='Bot Copa Star • Sistema FILAS')
     embed.timestamp = datetime.utcnow()
 
     return embed
